@@ -31,7 +31,7 @@ bool timeoutComplete;
 
 void setup() {
   Serial.begin(9600);
-  SPI.begin();      // Initiate  SPI bus
+  SPI.begin();      // Initiate  SPI bus  
   mfrc522.PCD_Init();   // Initiate MFRC522
 
   // put your setup code here, to run once:

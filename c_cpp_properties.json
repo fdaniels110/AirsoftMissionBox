@@ -6,12 +6,13 @@
                 "C:\\Program Files (x86)\\Arduino\\hardware\\arduino\\avr\\cores\\arduino",
                 "C:\\Program Files (x86)\\Arduino\\hardware\\arduino\\avr\\libraries\\SPI\\src",
                 "C:\\Program Files (x86)\\Arduino\\libraries\\rfid-master\\src\\**",
+                "C:\\Users\\fc196mega\\Documents\\Arduino\\libraries\\rfid-master\\src",
                 "${workspaceFolder}\\**"
             ],
             "browse": {
                 "limitSymbolsToIncludedHeaders": false, 
                 "path": [
-                    "C:\\Program Files (x86)\\Arduino\\libraries\\rfid-master\\src"
+                    "C:\\Users\\fc196mega\\Documents\\Arduino\\libraries\\rfid-master\\src"
                 ]
             },
             "defines": [
