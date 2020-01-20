@@ -22,30 +22,112 @@ byte rowPins[ROWS] = {10, 11, 12, 13}; //connect to the row pinouts of the keypa
 byte colPins[COLS] = {7, 8, 9}; //connect to the column pinouts of the keypad
 
 Keypad keypad = Keypad( makeKeymap(keys), rowPins, colPins, ROWS, COLS );
+const String freqs[5] = {"146.2", "357.9", "130.9", "263.8"};
+const String stages[4] = { "first", "second", "third", "fourth" };
 
 int stage; 
-bool 
-
+bool displayDone;
+char currentString[5];
+String currentOtherString = "";
+int charCurrentIndex = 0;
 void setup()
 {
+    Serial.begin(9600);
+
   lcd.init();                      // initialize the lcd 
   lcd.backlight();
   display_initial_screen(); 
-  delay(1000);
+  delay(2000);
   lcd.clear();
   lcd.setCursor(0,0);
   stage = 1;
+  displayDone = false;
 }
 
 void loop()
 {
-  if(stage == 1){
+  if(stage < 5){
+    if(!displayDone){
       lcd.clear();
       lcd.setCursor(0,0);
       lcd.print("Please enter the");      
+      lcd.setCursor(0,1);      
+      lcd.print(stages[stage - 1] + " frequency");      
+      displayDone = true;
+      lcd.setCursor(0,2);
+    }else{
+      char digit = keypad.waitForKey();
+      if(digit == '*'){
+        digit = '.';
+      }
+      lcd.print(digit);
+      currentOtherString = currentOtherString + digit;
+      
+      Serial.println(currentOtherString);
+      if(currentOtherString.length() == 5){
+        bool stringCheck = true;
+        if(freqs[stage - 1] != currentOtherString){
+          Serial.println("Invalid");
+          stringCheck = false;
+        }else{
+          Serial.println("Valid");
+        }
+                
+        if(stringCheck){
+          lcd.clear();
+          lcd.setCursor(0,0);
+          lcd.print("Frequency found");
+          delay(1000);
+          stage++;
+        }else{
+          lcd.clear();
+          lcd.setCursor(0,0);
+          lcd.print("Frequency not found");
+          delay(1000);
+        }
+        currentOtherString = "";
+        displayDone = false;
+      }else{
+        charCurrentIndex++;
+      }
+    }
+  }else if(stage == 5){
+    Serial.println("Stage 5");
+    lcd.clear();
+    lcd.setCursor(0,0);
+    lcd.print("Frequency acquired");
+    lcd.setCursor(0,1);
+    lcd.print("Press # to arm");
+    char digit = keypad.waitForKey();
+    if(digit == '#'){
+      stage = 6;
+    }
+  }else if(stage == 6){
+    if(!displayDone){
+      Serial.println("Stage 6");
+      lcd.clear();
+      lcd.setCursor(0,0);
+      lcd.print("Accessing");
       lcd.setCursor(0,1);
-      lcd.print("first frequency");
-      while(
+      lcd.print("Frequency");
+      delay(500);
+      lcd.print(".");
+      delay(500);
+      lcd.print(".");
+      delay(500);
+      lcd.print(".");
+      delay(500);
+      lcd.print(".");
+      delay(500);
+      stage++;
+    }
+  }else{
+    if(!displayDone){
+      lcd.clear();
+      lcd.setCursor(0,0);
+      lcd.print("JAMMING");
+      displayDone = true;
+    }
   }
   
 }
